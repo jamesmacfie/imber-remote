@@ -3,7 +3,7 @@
 var sprinkler = (function() {
 	var DDP = require('ddp'),
 		ddpClient = new DDP({
-			//	host: 'sprinkler.meteor.com',
+			//	host: 'host details',
 			//	port: 443
 		}),
 		logger = require('./logger'),

@@ -7,9 +7,8 @@
 		board;
 
 	function init() {
-		// board = new five.Board();
-		// setupBoard(sprinklerSubscribe);
-		sprinklerSubscribe();
+		board = new five.Board();
+		setupBoard(sprinklerSubscribe);
 	}
 
 	function setupBoard(callback) {
@@ -43,15 +42,15 @@
 	function turnOnSprinkler(pin) {
 		logger.log('info', 'Turning on sprinkler');
 
-		// var led = new five.Led(pin);
-		// led.on();
+		var led = new five.Led(pin);
+		led.on();
 	}
 
 	function turnOffSprinkler(pin) {
 		logger.log('info', 'Turning off sprinkler');
 
-		// var led = new five.Led(pin);
-		// led.off();
+		var led = new five.Led(pin);
+		led.off();
 	}
 
 	init();
