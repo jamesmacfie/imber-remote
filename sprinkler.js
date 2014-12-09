@@ -1,56 +1,84 @@
 'use strict';
 
-var chalk = require('chalk'),
-  collectionName = 'sprinklers',
-  observer;
+var sprinkler = (function() {
+	var DDP = require('ddp'),
+		ddpClient = new DDP({
+			//	host: 'sprinkler.meteor.com',
+			//	port: 443
+		}),
+		logger = require('./logger'),
+		sprinklerDetails = require('./sprinklerDetails'),
+		Q = require('q'),
+		EventEmitter = require('events').EventEmitter,
+		eventEmitter = new EventEmitter(),
+		observer;
 
-var sprinkler = {
-  subscribe: function(ddp, fn) {
-    var s = this;
-    ddp.subscribe(collectionName, [], function() {
-      console.log(chalk.green('Subscibed to ' + collectionName));
-      observer = ddp.observe(collectionName);
-      s.subscribeSprinklerChange();
-      fn();
-    });
-  },
-  subscribeSprinklerChange: function(onFn, offFn) {
-    observer.changed = function(id, oldFields, clearedFields, newFields) {
-      var startStatuses = ['active', 'resume'],
-        stopStatuses = ['inactive', 'paused'];
+	function initDetails(err, wasRecon) {
+		if (err) {
+			logger.log('error', 'DDP connection error.');
+			return;
+		}
 
-      if (startStatuses.indexOf(newFields.status) !== -1) {
-        onFn(id);
-      } else if (stopStatuses.indexOf(newFields.status) !== -1) {
-        offFn(id);
-      }
-    };
-  },
-  sanityCheck: function(ddp, onFn, offFn) {
-	console.log(chalk.yellow('Sanity checking sprinkler status'));
-	ddp.call('checkSprinklerStatus', [],
-		function(err, results) {
-			if (err) {
-				console.log(chalk.red('Error sanity checking details: ' + err));
+		if (wasRecon) {
+			logger.log('info', 'DDP reconnection made.');
+		}
+
+		logger.log('info', 'Getting initial sprinkler details.');
+		ddpClient.call('getConnectionDetails', [], setDetails, subscribeToCollectionChanges);
+	}
+
+	function setDetails(err, results) {
+		if (err) {
+			logger.log('error', 'Error in getting connection details.', err);
+			return;
+		}
+
+		logger.log('info', 'Successfully got connection details.');
+
+		sprinklerDetails.setDetails(results);
+	}
+
+	function subscribeToCollectionChanges() {
+		logger.log('info', 'Finished updating connection details');
+
+		ddpClient.subscribe('sprinklers', [], successfulCollectionSubscription);
+	}
+
+	function successfulCollectionSubscription() {
+		logger.log('info', 'Subscribed to sprinkler collection.');
+		observer = ddpClient.observe('sprinklers');
+
+		observer.changed = function(id, oldFields, clearedFields, newFields) {
+			if (!newFields.status) {
 				return;
 			}
-			console.log(chalk.green('Received sanity check details'));
 
-			results.forEach(function(s) {
-				if (s.status === 'active') {
-					console.log(chalk.yellow(['Sprinkler', s.name, 'set to active. Ensure it is on'].join(' ')));
-					onFn(s.id);
-				} else {
-					console.log(chalk.yellow(['Sprinkler', s.name, 'set to', s.status, '. Ensure it is off'].join(' ')));
-					offFn(s.id);
-				}
+			var statusAltered = sprinklerDetails.statusAltered(id, newFields.status),
+				detail;
+
+			if (statusAltered) {
+				detail = sprinklerDetails.update(id, newFields);
+				logger.log('info', [id, 'changed status from', oldFields.status, 'to', newFields.status].join(' '));
+
+				eventEmitter.emit('statusChange', detail);
+			}
+		};
+	}
+
+	return {
+		subscribe: function() {
+			var deferred = Q.defer();
+			ddpClient.connect(function() {
+				logger.log('info', 'Connected to sprinklers');
+
+				deferred.resolve(eventEmitter);
+
+				initDetails();
 			});
-		},
-		function() {
-			console.log(chalk.yellow('Finished sanity checking details'));
+
+			return deferred.promise;
 		}
-	);
-  }
-};
+	};
+})();
 
 module.exports = sprinkler;

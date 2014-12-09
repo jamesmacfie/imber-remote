@@ -1,38 +1,46 @@
 'use strict';
 
 var _ = require('underscore'),
-  chalk = require('chalk'),
-  five = require("johnny-five"),
-  connectionMap = {
-    1: 10,
-    2: 11,
-    3: 12
-  };
+	logger = require('./logger'),
+	connectionMap = require('./connectionMaps'),
+	details = [];
 
 module.exports = {
-  details: [],
-  setDetails: function(records) {
-    //Reset details
-    this.details = [];
+	setDetails: function(records) {
+		//Reset details
+		details = [];
 
-    records.forEach(function(record) {
-      record.pin = connectionMap[record.connection];
-      console.log(record.pin);
-      record.led = new five.Led(record.pin);
+		records.forEach(function(record) {
+			record.pin = connectionMap.getPin(record.connection);
 
-      this.details.push(record);
-    }, this);
+			details.push(record);
+		}, this);
 
-    console.log(chalk.green('Init sprinkler details set'));
+		logger.log('info', 'Init sprinkler details set');
+	},
+	get: function(id) {
+		return _(details).find(function(d) {
+			return d.id === id;
+		});
+	},
+	update: function(id, fields) {
+		logger.log('info', 'Updating ' + id, fields);
+		var detail  = this.get(id);
+		detail = _.extend(detail, fields);
 
-    return this.details;
-  },
-  updateDetail: function(id, fields) {
+		return detail;
+	},
+	statusAltered: function(id, status) {
+		var detail = this.get(id);
+		if (!detail) {
+			logger.log('error', 'The sprinkler with an ID of ' + id + ' was not found');
+			return false;
+		}
 
-  },
-  get: function(id) {
-    return _(this.details).find(function(d) {
-      return d.id === id;
-    });
-  }
-}
+		if (detail.status !== status) {
+			return true;
+		}
+
+		return false;
+	}
+};
