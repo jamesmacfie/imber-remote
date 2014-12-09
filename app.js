@@ -1,3 +1,12 @@
+/*
+ * The main entry point for the sprinkler controller. This file listens for event changes
+ * on a sprinkler collection and turns on or off certain Arduino pins depending on what is
+ * needed.
+ *
+ * It has no knowledge of the inner workings of the sprinklers apart form a defined set of
+ * status's that determine the on/off switch.
+ */
+
 'use strict';
 
 (function() {
@@ -6,27 +15,38 @@
 		sprinkler = require('./sprinkler'),
 		board;
 
+	/*
+	 * Intialise the app. Starts by creating the johnny-five board and then listening
+	 * for sprinkler colletion events.
+	 */
 	function init() {
 		board = new five.Board();
-		setupBoard(sprinklerSubscribe);
-	}
-
-	function setupBoard(callback) {
 		board.on('ready', function() {
 			logger.log('info', 'Board ready');
-			callback.call();
+			sprinklerSubscribe();
 		});
 	}
 
+	/*
+	 * Subscribe to the sprinkler collection
+	 */
 	function sprinklerSubscribe() {
 		logger.log('info', 'Attempting to subscribe to the sprinklers');
 		sprinkler.subscribe().then(bindEvents);
 	}
 
+	/*
+	 * If we have successfully subscribed to the sprinkler colletion the bind our events
+	 * to any changes in status. Makes the assumption that the pub/sub implementation that
+	 * the colletion returns has an `on` method.
+	 *
+	 * @params {objet} [s] The sprinkler event emitter
+	 */
 	function bindEvents(s) {
 		s.on('statusChange', function(sprinkler) {
 			logger.log('info', 'Status change received', sprinkler.status);
 
+			// Which status's start a particular sprinkler and which status's stop it
 			var startStatuses = ['active', 'resume'],
 				stopStatuses = ['inactive', 'paused'];
 
@@ -39,6 +59,12 @@
 		});
 	}
 
+	/*
+	 * Turns on a given sprinkler/johnny-five pin. Currently uses the LED functionality
+	 * because ...meh. I should change this to something a little more generic
+	 *
+	 * @params {number} [pin] The pin number on the johnny-five to turn on
+	 */
 	function turnOnSprinkler(pin) {
 		logger.log('info', 'Turning on sprinkler');
 
@@ -46,6 +72,12 @@
 		led.on();
 	}
 
+	/*
+	* Turns off a given sprinkler/johnny-five pin. Currently uses the LED functionality
+	* because ...meh. I should change this to something a little more generic
+	*
+	* @params {number} [pin] The pin number on the johnny-five to turn off
+	*/
 	function turnOffSprinkler(pin) {
 		logger.log('info', 'Turning off sprinkler');
 
