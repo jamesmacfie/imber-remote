@@ -1,6 +1,6 @@
 {
   "name": "imber-remote",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A small module for use with Project Imber. It controls three solenoid valves via an Arduino.",
   "author": "James Macfie <james@macfie.co.nz>",
   "main": "app.js",
