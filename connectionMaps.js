@@ -16,6 +16,8 @@ module.exports = {
 	 * Returns the physical pin number given the connection value set via Meteor
 	 *
 	 * @param {number} [conn] The connection value via the Meteor app
+	 *
+	 * @returns {number} The physical pin number
 	 */
 	getPin: function(conn) {
 		return connectionMap[parseInt(conn)];
