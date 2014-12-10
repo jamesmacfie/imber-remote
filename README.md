@@ -17,26 +17,28 @@ be extended to do other stuff with a minimal amount of tweaking.
 Although this code can be run from any computer that runs node and has an Arduino attached to it,
 ideally this belongs on a dedicated Raspberry Pi. So the installation instructions below assume this.
 
-Arduino Setup
+##Arduino Setup
 
-My setup has three solenoid valves on pins 10, 11, and 12. The connection map (link) can be changed to any
+My setup has three solenoid valves on pins 10, 11, and 12. The [connection map](https://github.com/jamesmacfie/imber-remote/blob/master/connectionMaps.js) can be changed to any
 other pin numbers if you want to change which pins direct the valves on the arduino.
 
 Kit:
- * Raspberry Pi (link)
+ * [Raspberry Pi](http://www.raspberrypi.org/)
  * USB wifi dongle (optional if you have a nearly ethernet port)
- * Arduino Uno (link)
- * Three solid state relays (I have these (link))
- * Three solenoid valves (I have these (link))
+ * [Arduino Uno](http://arduino.cc/en/Main/arduinoBoardUno) or compatible microcontroller
+ * Three solid state relays (I have [these](http://www.dx.com/p/arduino-2-channel-5v-relay-module-expansion-board-137160#.VIf7NtY6GKw))
+ * Three solenoid valves (I have [these](http://www.dx.com/p/electric-solenoid-valve-for-water-air-n-c-12v-dc-1-2-normally-closed-golden-white-246864#.VIf67tY6GKw))
+ * 12v power adapter
  * Male to female leads
 
-Setup your kit a little somthing like this:
-(insert image of the setup here)
+You'll need to setup your SSR's with the default state to 'always off' so that they are only on when the Arduino sends
+sends a current. Depending on your relays, the leads simply go form the appropriate Arduino port to the appropriate
+relay pin. The USB goes to the Raspberry Pi and that's about it.
 
 I'd recommend putting your valves in some sort of enclosure away from the electronics and in a manner where,
 if a hose comes loose or bursts, no electronics are affected. It's happened to me before and isn't nice.
 
-Installation of the node module
+##Installation of the node module
 
 ```
 npm install imber-remote
@@ -45,11 +47,12 @@ node app.js
 
 ```
 
-Running on raspberry pi startup
+##Other notes
 
 If you like you can SSH into your Raspberry Pi, but if your Pi exists soley for your sprinkler system like
 mine does then having the node module run on startup by default might be something you want to do. You know,
 so if your power goes out or something then your sprinkler system will automatically restart and start monitoring
-for changes again without your input.
+for changes again without your input. There are plenty of guides on the net for this
 
-Restarting on crash
+You may also want to use something like [nodemon](https://github.com/remy/nodemon) or [forever](https://github.com/nodejitsu/forever) to ensure that if your app does crash for whatever reason then it
+will startup again.
