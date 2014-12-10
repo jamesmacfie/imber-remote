@@ -1,24 +1,29 @@
 {
-    "name": "imber-remote",
-    "version": "0.0.1",
-    "description": "A small module for use with Project Imber. It controls three solenoid valves via an Arduino.",
-    "author": "James Macfie <james@macfie.co.nz>",
-    "main": "app.js",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/jamesmacfie/imber-remote"
-    },
-    "bugs": {
-        "url": "https://github.com/jamesmacfie/imber-remote/issues"
-    },
-    "keywords": [],
-    "dependencies": {
-        "ddp": "~0.9.1",
-        "events": "git://github.com/Gozala/events#master",
-        "johnny-five": "~0.8.25",
-        "q": "~1.0.1",
-        "underscore": "~1.5.2",
-        "winston": "~0.8.3"
-    },
-    "license": "MIT"
+  "name": "imber-remote",
+  "version": "0.0.1",
+  "description": "A small module for use with Project Imber. It controls three solenoid valves via an Arduino.",
+  "author": "James Macfie <james@macfie.co.nz>",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jamesmacfie/imber-remote"
+  },
+  "bugs": {
+    "url": "https://github.com/jamesmacfie/imber-remote/issues"
+  },
+  "keywords": [],
+  "dependencies": {
+    "ddp": "~0.9.1",
+    "events": "git://github.com/Gozala/events#master",
+    "johnny-five": "~0.8.25",
+    "q": "~1.0.1",
+    "underscore": "~1.5.2",
+    "winston": "~0.8.3"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/jamesmacfie/imber-remote",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
