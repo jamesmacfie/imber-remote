@@ -1,3 +1,8 @@
+/*
+ * A simple mapping between the generic values set on Meteor sprinkler app and
+ * the physical pins on the arduino
+ */
+
 'use strict';
 
 var connectionMap = {
@@ -7,6 +12,11 @@ var connectionMap = {
 };
 
 module.exports = {
+	/*
+	 * Returns the physical pin number given the connection value set via Meteor
+	 *
+	 * @param {number} [conn] The connection value via the Meteor app
+	 */
 	getPin: function(conn) {
 		return connectionMap[parseInt(conn)];
 	}
