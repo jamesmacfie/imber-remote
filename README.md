@@ -43,6 +43,8 @@ if a hose comes loose or bursts, no electronics are affected. It's happened to m
 ```
 npm install imber-remote
 
+cd node_modules/imber-remote
+
 node app.js
 
 ```
