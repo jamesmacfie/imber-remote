@@ -13,8 +13,8 @@ var sprinkler = (function() {
 	var DDP = require('ddp'),
 		// Insert server details here. Defaults to http://localhost:3000
 		ddpClient = new DDP({
-			//	host: 'host details',
-			//	port: 443
+			host: 'sprinkler.meteor.com',
+			port: 443
 		}),
 		logger = require('./logger'),
 		sprinklerDetails = require('./sprinklerDetails'),
@@ -84,7 +84,6 @@ var sprinkler = (function() {
 
 		// Regsiter changes on the collection
 		observer.changed = function(id, oldFields, clearedFields, newFields) {
-			logger.log('info', 'change');
 			if (!newFields.status) {
 				// No status field change so we don't care
 				return;
