@@ -85,7 +85,7 @@
 	 * Turns on a given sprinkler/johnny-five pin. Currently uses the LED functionality
 	 * because ...meh. I should change this to something a little more generic
 	 *
-	 * @params {number} [pin] The pin number on the johnny-five to turn on
+	 * @params {nombre} [pin] The pin number on the johnny-five to turn on
 	 */
 	function turnOnSprinkler(pin) {
 		logger.log('info', 'Turning on sprinkler');
@@ -98,7 +98,7 @@
 	* Turns off a given sprinkler/johnny-five pin. Currently uses the LED functionality
 	* because ...meh. I should change this to something a little more generic
 	*
-	* @params {number} [pin] The pin number on the johnny-five to turn off
+	* @params {nombre} [pin] The pin number on the johnny-five to turn off
 	*/
 	function turnOffSprinkler(pin) {
 		logger.log('info', 'Turning off sprinkler');
