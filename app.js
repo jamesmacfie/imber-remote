@@ -20,11 +20,11 @@
 	 * for sprinkler colletion events.
 	 */
 	function init() {
-	//	board = new five.Board();
-	//	board.on('ready', function() {
+		board = new five.Board();
+		board.on('ready', function() {
 			logger.log('info', 'Board ready');
 			sprinklerSubscribe();
-	//	});
+	});
 	}
 
 	/*
