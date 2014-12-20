@@ -78,7 +78,7 @@
 		logger.log('info', 'Init sanity check');
 		setInterval(function() {
 			sprinkler.sanityCheck().then(statusChangeHandler);
-		}, 5000);
+		}, 30000);
 	}
 
 	/*
