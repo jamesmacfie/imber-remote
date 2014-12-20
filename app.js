@@ -20,11 +20,11 @@
 	 * for sprinkler colletion events.
 	 */
 	function init() {
-		board = new five.Board();
-		board.on('ready', function() {
+	//	board = new five.Board();
+	//	board.on('ready', function() {
 			logger.log('info', 'Board ready');
 			sprinklerSubscribe();
-		});
+	//	});
 	}
 
 	/*
@@ -32,7 +32,11 @@
 	 */
 	function sprinklerSubscribe() {
 		logger.log('info', 'Attempting to subscribe to the sprinklers');
-		sprinkler.subscribe().then(bindEvents);
+		sprinkler.subscribe().then(function() {
+			logger.log('info', 'Bind events and start sanity check');
+			sanityCheck();
+			bindEvents();
+		});
 	}
 
 	/*
@@ -43,20 +47,38 @@
 	 * @params {objet} [s] The sprinkler event emitter
 	 */
 	function bindEvents(s) {
-		s.on('statusChange', function(sprinkler) {
-			logger.log('info', 'Status change received', sprinkler.status);
+		logger.log('info', 'Binding status change event');
+		s.on('statusChange', statusChangeHandler);
+	}
 
-			// Which status's start a particular sprinkler and which status's stop it
-			var startStatuses = ['active', 'resume'],
-				stopStatuses = ['inactive', 'paused'];
+	/*
+	 * Deals with any changes in any sprinkler status.
+	 *
+	 * @params {objet} [sprinkler] The sprinkler
+	 */
+	function statusChangeHandler(sprinkler) {
+		logger.log('info', 'Status change received', sprinkler.status);
 
-			if (startStatuses.indexOf(sprinkler.status) !== -1) {
-				turnOnSprinkler(sprinkler.pin);
-			} else if (stopStatuses.indexOf(sprinkler.status) !== -1) {
-				turnOffSprinkler(sprinkler.pin);
-			}
+		// Which status's start a particular sprinkler and which status's stop it
+		var startStatuses = ['active', 'resume'],
+		stopStatuses = ['inactive', 'paused'];
 
-		});
+		if (startStatuses.indexOf(sprinkler.status) !== -1) {
+			turnOnSprinkler(sprinkler.pin);
+		} else if (stopStatuses.indexOf(sprinkler.status) !== -1) {
+			turnOffSprinkler(sprinkler.pin);
+		}
+	}
+
+	/*
+	 * Repeats a sanity check on the sprinkler status' every 30 seconds. This is incase
+	 * our observer misses a change in sprinkler status.
+	 */
+	function sanityCheck() {
+		logger.log('info', 'Init sanity check');
+		setInterval(function() {
+			sprinkler.sanityCheck().then(statusChangeHandler);
+		}, 5000);
 	}
 
 	/*

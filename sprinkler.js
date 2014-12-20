@@ -84,6 +84,7 @@ var sprinkler = (function() {
 
 		// Regsiter changes on the collection
 		observer.changed = function(id, oldFields, clearedFields, newFields) {
+			logger.log('info', 'change');
 			if (!newFields.status) {
 				// No status field change so we don't care
 				return;
@@ -118,9 +119,40 @@ var sprinkler = (function() {
 				// Woo, connected! Resolve promise and return our event emitter.
 				deferred.resolve(eventEmitter);
 
-				// Now initialise all our sprinkler details etc. 
+				// Now initialise all our sprinkler details etc.
 				initDetails();
 			});
+
+			return deferred.promise;
+		},
+
+		/*
+		* Subscribe to the sprinkler collection
+		*
+		* @returns {promise}
+		*/
+		sanityCheck: function() {
+			logger.log('info', 'Sanity checking sprinkler status');
+
+			var deferred = Q.defer();
+			ddpClient.call('checkSprinklerStatus', [],
+				function(err, results) {
+					if (err) {
+						logger.log('error', 'Error sanity checking details: ' + err);
+						return;
+					}
+
+					results.forEach(function(s) {
+						if (sprinklerDetails.statusAltered(s.id, s.status)) {
+							logger.log('info', s.name + ' altered state in sanity check. Resolving');
+							deferred.resolve(s);
+						}
+					});
+				},
+				function() {
+					logger.log('info', 'Finished sanity checking details');
+				}
+			);
 
 			return deferred.promise;
 		}
