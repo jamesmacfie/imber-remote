@@ -13,8 +13,8 @@ var sprinkler = (function() {
 	var DDP = require('ddp'),
 		// Insert server details here. Defaults to http://localhost:3000
 		ddpClient = new DDP({
-			host: 'sprinkler.meteor.com',
-			port: 443
+			//host: 'sprinkler.meteor.com',
+			//port: 443
 		}),
 		logger = require('./logger'),
 		sprinklerDetails = require('./sprinklerDetails'),

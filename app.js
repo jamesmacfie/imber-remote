@@ -32,10 +32,10 @@
 	 */
 	function sprinklerSubscribe() {
 		logger.log('info', 'Attempting to subscribe to the sprinklers');
-		sprinkler.subscribe().then(function() {
+		sprinkler.subscribe().then(function(sprinkler) {
 			logger.log('info', 'Bind events and start sanity check');
-			sanityCheck();
-			bindEvents();
+			sanityCheck(sprinkler);
+			bindEvents(sprinkler);
 		});
 	}
 
@@ -64,8 +64,10 @@
 		stopStatuses = ['inactive', 'paused'];
 
 		if (startStatuses.indexOf(sprinkler.status) !== -1) {
+			console.log('starting on ' + sprinkler.pin);
 			turnOnSprinkler(sprinkler.pin);
 		} else if (stopStatuses.indexOf(sprinkler.status) !== -1) {
+			console.log('stopping on ' + sprinkler.pin);
 			turnOffSprinkler(sprinkler.pin);
 		}
 	}
