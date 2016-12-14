@@ -24,7 +24,7 @@
 		board.on('ready', function() {
 			logger.log('info', 'Board ready');
 			sprinklerSubscribe();
-	});
+		});
 	}
 
 	/*
@@ -57,17 +57,15 @@
 	 * @params {objet} [sprinkler] The sprinkler
 	 */
 	function statusChangeHandler(sprinkler) {
-		logger.log('info', 'Status change received', sprinkler.status);
+		logger.log('info', 'Status change received', sprinkler);
 
 		// Which status's start a particular sprinkler and which status's stop it
 		var startStatuses = ['active', 'resume'],
 		stopStatuses = ['inactive', 'paused'];
 
 		if (startStatuses.indexOf(sprinkler.status) !== -1) {
-			console.log('starting on ' + sprinkler.pin);
 			turnOnSprinkler(sprinkler.pin);
 		} else if (stopStatuses.indexOf(sprinkler.status) !== -1) {
-			console.log('stopping on ' + sprinkler.pin);
 			turnOffSprinkler(sprinkler.pin);
 		}
 	}
@@ -90,7 +88,7 @@
 	 * @params {nombre} [pin] The pin number on the johnny-five to turn on
 	 */
 	function turnOnSprinkler(pin) {
-		logger.log('info', 'Turning on sprinkler');
+		logger.log('info', 'Turning on sprinkler ' + pin);
 
 		var led = new five.Led(pin);
 		led.on();
@@ -103,7 +101,7 @@
 	* @params {nombre} [pin] The pin number on the johnny-five to turn off
 	*/
 	function turnOffSprinkler(pin) {
-		logger.log('info', 'Turning off sprinkler');
+		logger.log('info', 'Turning off sprinkler ' + pin);
 
 		var led = new five.Led(pin);
 		led.off();

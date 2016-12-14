@@ -23,7 +23,6 @@ module.exports = {
 		// For each sprinkler, map the connection to the physical pin.
 		records.forEach(function(record) {
 			record.pin = connectionMap.getPin(record.connection);
-
 			details.push(record);
 		}, this);
 
