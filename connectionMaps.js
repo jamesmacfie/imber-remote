@@ -8,7 +8,8 @@
 var connectionMap = {
 	1: 10,
 	2: 11,
-	3: 12
+	3: 12,
+	4: 9
 };
 
 module.exports = {
